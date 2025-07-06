@@ -17,7 +17,3 @@ This contains everything you need to run your app locally.
    ```bash
    npm run dev
    ```
-
----
-
-Jika mau, kirim bagian deploy ke vercel/netlify/github pages, agar aku rapikan juga dalam format seragam untuk catatan belajarmu.
