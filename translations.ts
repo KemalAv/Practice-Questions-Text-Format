@@ -87,7 +87,7 @@ export const translations = {
     mcqReviewArea_scoreLabel: "Skor: {0}/{1}",
     mcqReviewArea_submitAnswerButton: "Kirim Jawaban",
     mcqReviewArea_nextQuestionButton: "Soal Berikutnya",
-    mcqReviewArea_submitQuizButton: "Kumpulkan",
+    mcqReviewArea_submitQuizButton: "Kumpulkan Kuis",
     mcqReviewArea_feedbackCorrect: "Jawaban Benar!",
     mcqReviewArea_feedbackIncorrect: "Jawaban Salah. Jawaban yang benar adalah: {0}",
     mcqReviewArea_explanationLabel: "Penjelasan:",
