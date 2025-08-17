@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Button } from './Button';
 import { useLocalization } from '../hooks/useLocalization';
@@ -8,15 +9,15 @@ import { Card } from './Card';
 interface MainMenuProps {
   onSelectFlashcard: () => void;
   onSelectMultipleChoice: () => void;
-  // isOrderRandom: boolean; // Removed
-  // onToggleOrder: () => void; // Removed
+  isLatexEnabled: boolean;
+  onToggleLatex: (enabled: boolean) => void;
 }
 
 export const MainMenu: React.FC<MainMenuProps> = ({ 
   onSelectFlashcard, 
   onSelectMultipleChoice,
-  // isOrderRandom, // Removed
-  // onToggleOrder // Removed
+  isLatexEnabled,
+  onToggleLatex
 }) => {
   const { t } = useLocalization();
 
@@ -27,7 +28,33 @@ export const MainMenu: React.FC<MainMenuProps> = ({
       </h2>
       
       <div className="w-full space-y-6"> {/* Adjusted spacing */}
-        {/* Order preference toggle removed from here */}
+        
+        <div className="w-full p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-slate-50 dark:bg-gray-750">
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            {t('mainMenu_latexSupport')}
+          </p>
+          <div className="flex space-x-2">
+            <Button
+              onClick={() => onToggleLatex(true)}
+              variant={isLatexEnabled ? 'primary' : 'secondary'}
+              size="sm"
+              aria-pressed={isLatexEnabled}
+              className="flex-1"
+            >
+              {t('common_enabled')}
+            </Button>
+            <Button
+              onClick={() => onToggleLatex(false)}
+              variant={!isLatexEnabled ? 'primary' : 'secondary'}
+              size="sm"
+              aria-pressed={!isLatexEnabled}
+              className="flex-1"
+            >
+              {t('common_disabled')}
+            </Button>
+          </div>
+        </div>
+
         <p className="text-lg text-gray-600 dark:text-gray-300 text-center">
           {t('mainMenu_selectMode')}
         </p>

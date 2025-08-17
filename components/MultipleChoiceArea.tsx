@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from './Button';
 import { Card } from './Card';
 import { HomeIcon, NextIcon, PrevIcon } from '../constants'; // ShuffleIcon removed
 import { useLocalization } from '../hooks/useLocalization';
 import { MultipleChoiceQuestion } from '../types';
+import { ContentRenderer } from './ContentRenderer';
 
 interface MultipleChoiceReviewAreaProps {
   mcqs: MultipleChoiceQuestion[];
@@ -16,8 +16,9 @@ interface MultipleChoiceReviewAreaProps {
   onStartNewMCQSet: () => void; // To go back to MCQ input
   isQuizComplete: boolean;
   onRestartQuiz: () => void;
-  isOrderRandom: boolean; // Kept for potential display logic
-  // onToggleOrder: () => void; // Removed
+  isOrderRandom: boolean;
+  userAnswers: Record<string, number>;
+  isLatexEnabled: boolean;
 }
 
 export const MultipleChoiceReviewArea: React.FC<MultipleChoiceReviewAreaProps> = ({
@@ -30,8 +31,9 @@ export const MultipleChoiceReviewArea: React.FC<MultipleChoiceReviewAreaProps> =
   onStartNewMCQSet,
   isQuizComplete,
   onRestartQuiz,
-  isOrderRandom, // isOrderRandom is now a preference set on MainMenu
-  // onToggleOrder, // Removed
+  isOrderRandom,
+  userAnswers,
+  isLatexEnabled,
 }) => {
   const { t, language } = useLocalization(); 
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
@@ -80,13 +82,75 @@ export const MultipleChoiceReviewArea: React.FC<MultipleChoiceReviewAreaProps> =
   const optionLetters = ['A', 'B', 'C', 'D'];
 
   if (isQuizComplete) {
+    const percentage = mcqs.length > 0 ? Math.round((score / mcqs.length) * 100) : 0;
+
     return (
-      <Card className="w-full max-w-lg p-6 md:p-8 text-center">
-        <h2 className="text-3xl font-bold mb-4 text-indigo-600 dark:text-indigo-400">{t('mcqReviewArea_quizCompleteTitle')}</h2>
-        <p className="text-xl mb-6 text-gray-700 dark:text-gray-300">
-          {t('mcqReviewArea_finalScore', score, mcqs.length)}
+      <div className="w-full max-w-3xl p-4 md:p-6 bg-white dark:bg-gray-800 shadow-xl rounded-lg">
+        <h2 className="text-3xl font-bold mb-2 text-center text-indigo-600 dark:text-indigo-400">{t('mcqReviewArea_quizCompleteTitle')}</h2>
+        <p className="text-xl mb-4 text-center font-semibold text-gray-700 dark:text-gray-300">
+          {t('mcqReviewArea_finalScore', score, mcqs.length)} ({percentage}%)
         </p>
-        <div className="space-y-3 sm:space-y-0 sm:space-x-3 flex flex-col sm:flex-row justify-center items-center">
+        <div className="border-t border-gray-200 dark:border-gray-700 my-6"></div>
+
+        <div className="space-y-8 max-h-[60vh] overflow-y-auto pr-2">
+          {mcqs.map((mcq, index) => {
+            const userAnswerIndex = userAnswers[mcq.id];
+            const correctAnswerIndex = mcq.correctAnswerIndex;
+            const isCorrect = userAnswerIndex === correctAnswerIndex;
+
+            return (
+              <div key={mcq.id} className="p-4 bg-slate-50 dark:bg-gray-900/50 rounded-lg">
+                <div className="font-semibold text-lg mb-4 text-gray-800 dark:text-gray-200 break-words flex items-start" lang={language === 'id' ? 'id' : 'en'}>
+                  <span className="font-bold mr-2">{index + 1}.</span>
+                  <ContentRenderer
+                    content={mcq.question}
+                    isLatexEnabled={isLatexEnabled}
+                    className="flex-1"
+                  />
+                </div>
+                <div className="space-y-2">
+                  {mcq.options.map((option, optionIndex) => {
+                    let styles = "p-3 rounded-md text-left w-full text-sm flex items-start border-2";
+                    const isUserAnswer = optionIndex === userAnswerIndex;
+                    const isCorrectAnswer = optionIndex === correctAnswerIndex;
+
+                    if (isCorrectAnswer) {
+                      styles += " bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 font-semibold border-green-500/80";
+                    } else if (isUserAnswer && !isCorrect) {
+                      styles += " bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 font-semibold border-red-500/80";
+                    } else {
+                      styles += " bg-slate-200/60 dark:bg-gray-700/60 border-transparent";
+                    }
+                    
+                    return (
+                      <div key={optionIndex} className={styles} lang={language === 'id' ? 'id' : 'en'}>
+                        <span className="font-bold mr-2">{optionLetters[optionIndex]}.</span>
+                        <ContentRenderer
+                          content={option}
+                          isLatexEnabled={isLatexEnabled}
+                          className="flex-1"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                {mcq.explanation && (
+                  <div className="mt-4 p-3 bg-indigo-50 dark:bg-indigo-900/50 rounded-md border-l-4 border-indigo-400">
+                    <h4 className="font-semibold text-sm text-indigo-800 dark:text-indigo-200 mb-1">{t('mcqReviewArea_explanationLabel')}</h4>
+                    <ContentRenderer
+                      content={mcq.explanation}
+                      isLatexEnabled={isLatexEnabled}
+                      className="text-sm text-indigo-700 dark:text-indigo-300"
+                      lang={language === 'id' ? 'id' : 'en'}
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3 sm:space-y-0 sm:space-x-3 flex flex-col sm:flex-row justify-center items-center">
           <Button onClick={onRestartQuiz} variant="primary" size="lg" leftIcon={<PrevIcon />}>
             {t('mcqReviewArea_restartQuizButton')}
           </Button>
@@ -97,7 +161,7 @@ export const MultipleChoiceReviewArea: React.FC<MultipleChoiceReviewAreaProps> =
             {t('common_backToMainMenuButton')}
           </Button>
         </div>
-      </Card>
+      </div>
     );
   }
   
@@ -117,12 +181,15 @@ export const MultipleChoiceReviewArea: React.FC<MultipleChoiceReviewAreaProps> =
       </div>
 
       <Card className="w-full p-6">
-        <p className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-6 break-words" lang={language === 'id' ? 'id' : 'en'}>
-          {currentMCQ.question}
-        </p>
+        <ContentRenderer
+          content={currentMCQ.question}
+          isLatexEnabled={isLatexEnabled}
+          className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-6 break-words"
+          lang={language === 'id' ? 'id' : 'en'}
+        />
         <div className="space-y-3">
           {currentMCQ.options.map((option, index) => {
-            let buttonStyle = "w-full text-left justify-start py-3"; 
+            let buttonStyle = "w-full text-left justify-start py-3 h-auto"; // Set height to auto
             let variant: 'primary' | 'secondary' | 'danger' = 'secondary'; 
 
             if (showFeedback) {
@@ -152,7 +219,13 @@ export const MultipleChoiceReviewArea: React.FC<MultipleChoiceReviewAreaProps> =
                 disabled={showFeedback}
                 aria-pressed={selectedOptionIndex === index}
               >
-                <span className="font-semibold mr-2">{optionLetters[index]}.</span> <span lang={language === 'id' ? 'id' : 'en'}>{option}</span>
+                <span className="font-semibold mr-2 self-start pt-1">{optionLetters[index]}.</span> 
+                <ContentRenderer
+                  content={option}
+                  isLatexEnabled={isLatexEnabled}
+                  className="inline-block text-left flex-1"
+                  lang={language === 'id' ? 'id' : 'en'}
+                />
               </Button>
             );
           })}
@@ -168,7 +241,12 @@ export const MultipleChoiceReviewArea: React.FC<MultipleChoiceReviewAreaProps> =
       {showFeedback && currentMCQ.explanation && (
         <div className="mt-3 p-4 bg-slate-100 dark:bg-slate-700 rounded-lg w-full shadow">
           <h4 className="font-semibold text-md text-gray-700 dark:text-gray-200 mb-1.5">{t('mcqReviewArea_explanationLabel')}</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-wrap" lang={language === 'id' ? 'id' : 'en'}>{currentMCQ.explanation}</p>
+          <ContentRenderer
+            content={currentMCQ.explanation}
+            isLatexEnabled={isLatexEnabled}
+            className="text-sm text-gray-600 dark:text-gray-300"
+            lang={language === 'id' ? 'id' : 'en'}
+          />
         </div>
       )}
 

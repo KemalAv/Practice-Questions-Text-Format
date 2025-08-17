@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Flashcard } from '../types';
 import { Button } from './Button';
 import { Card } from './Card';
 import { PrevIcon, NextIcon, EyeOpenIcon, EyeSlashIcon, HomeIcon } from '../constants'; // ShuffleIcon removed
 import { useLocalization } from '../hooks/useLocalization';
+import { ContentRenderer } from './ContentRenderer';
 
 interface FlashcardReviewAreaProps {
   card: Flashcard | null;
@@ -18,8 +18,8 @@ interface FlashcardReviewAreaProps {
   totalCards: number;
   canGoPrevious: boolean;
   canGoNext: boolean;
-  isOrderRandom: boolean; // Kept for potential display logic, but not for toggling
-  // onToggleOrder: () => void; // Removed
+  isOrderRandom: boolean;
+  isLatexEnabled: boolean;
 }
 
 export const FlashcardReviewArea: React.FC<FlashcardReviewAreaProps> = ({
@@ -33,8 +33,8 @@ export const FlashcardReviewArea: React.FC<FlashcardReviewAreaProps> = ({
   currentIndex,
   totalCards,
   canGoPrevious,
-  isOrderRandom, // isOrderRandom is now a preference set on MainMenu
-  // onToggleOrder, // Removed
+  isOrderRandom,
+  isLatexEnabled,
 }) => {
   const { t } = useLocalization();
 
@@ -83,12 +83,18 @@ export const FlashcardReviewArea: React.FC<FlashcardReviewAreaProps> = ({
 
       <div className="w-full aspect-[3/2] sm:aspect-[2/1]">
         <Card className="w-full h-full">
-          <div className="text-lg md:text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4 break-words">
-            {card.soal}
-          </div>
+          <ContentRenderer
+            content={card.soal}
+            isLatexEnabled={isLatexEnabled}
+            className="text-lg md:text-xl font-semibold text-gray-700 dark:text-gray-200 mb-4 break-words"
+          />
           {showAnswer && (
             <div className="mt-2 p-3 bg-indigo-50 dark:bg-indigo-900 rounded-md w-full">
-              <p className="text-md md:text-lg text-indigo-700 dark:text-indigo-300 break-words">{card.jawaban}</p>
+               <ContentRenderer
+                  content={card.jawaban}
+                  isLatexEnabled={isLatexEnabled}
+                  className="text-md md:text-lg text-indigo-700 dark:text-indigo-300 break-words"
+                />
             </div>
           )}
         </Card>
