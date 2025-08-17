@@ -1,4 +1,5 @@
 
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { FlashcardInputArea } from './components/FlashcardInputArea';
 import { FlashcardReviewArea } from './components/FlashcardReviewArea';
@@ -371,11 +372,14 @@ const App: React.FC = () => {
   const [multipleChoiceQuestions, setMultipleChoiceQuestions] = useState<MultipleChoiceQuestion[]>([]); // For display
   const [currentMCQIndex, setCurrentMCQIndex] = useState<number>(0);
   const [mcqScore, setMcqScore] = useState<number>(0);
+  const [userAnswers, setUserAnswers] = useState<Record<string, number>>({});
   const [mcqParsingError, setMcqParsingError] = useState<string | null>(null);
   const [isQuizComplete, setIsQuizComplete] = useState<boolean>(false);
   
   const [view, setView] = useState<AppView>(AppView.MainMenu);
   const [isOrderRandom, setIsOrderRandom] = useState<boolean>(true); // Default to random order
+  const [isLatexEnabled, setIsLatexEnabled] = useState<boolean>(true); // Default to enabled
+
 
   const resetFlashcardState = () => {
     setSourceFlashcards([]);
@@ -393,6 +397,7 @@ const App: React.FC = () => {
     setMcqParsingError(null);
     setCurrentMCQIndex(0);
     setMcqScore(0);
+    setUserAnswers({});
     setIsQuizComplete(false);
   };
 
@@ -507,6 +512,8 @@ const App: React.FC = () => {
   const handleMCQAnswerSubmit = useCallback((questionId: string, selectedOptionIndex: number): boolean => {
     const currentMCQ = multipleChoiceQuestions[currentMCQIndex];
     if (!currentMCQ || currentMCQ.id !== questionId) return false;
+    
+    setUserAnswers(prev => ({...prev, [questionId]: selectedOptionIndex}));
 
     const isCorrect = selectedOptionIndex === currentMCQ.correctAnswerIndex;
     if (isCorrect) {
@@ -527,6 +534,7 @@ const App: React.FC = () => {
     setMultipleChoiceQuestions(isOrderRandom ? shuffleArray([...sourceMCQs]) : [...sourceMCQs]); 
     setCurrentMCQIndex(0);
     setMcqScore(0);
+    setUserAnswers({});
     setIsQuizComplete(false);
   }, [sourceMCQs, isOrderRandom]);
 
@@ -584,7 +592,8 @@ const App: React.FC = () => {
           <MainMenu 
             onSelectFlashcard={handleSelectFlashcardMode} 
             onSelectMultipleChoice={handleSelectMultipleChoiceMode} 
-            // isOrderRandom and onToggleOrder removed from MainMenu props
+            isLatexEnabled={isLatexEnabled}
+            onToggleLatex={setIsLatexEnabled}
           />
         )}
         {/* Flashcard Views */}
@@ -613,6 +622,7 @@ const App: React.FC = () => {
             canGoPrevious={flashcards.length > 1} 
             canGoNext={flashcards.length > 1} 
             isOrderRandom={isOrderRandom} 
+            isLatexEnabled={isLatexEnabled}
           />
         )}
          {view === AppView.Review && flashcards.length === 0 && ( 
@@ -655,6 +665,7 @@ const App: React.FC = () => {
             mcqs={multipleChoiceQuestions}
             currentMCQIndex={currentMCQIndex}
             score={mcqScore}
+            userAnswers={userAnswers}
             onAnswerSubmit={handleMCQAnswerSubmit}
             onNextMCQ={handleNextMCQ}
             onGoToMainMenu={handleGoToMainMenu}
@@ -662,6 +673,7 @@ const App: React.FC = () => {
             isQuizComplete={isQuizComplete}
             onRestartQuiz={handleRestartMCQQuiz}
             isOrderRandom={isOrderRandom}
+            isLatexEnabled={isLatexEnabled}
           />
         )}
         {view === AppView.MCQReview && multipleChoiceQuestions.length === 0 && ( 
