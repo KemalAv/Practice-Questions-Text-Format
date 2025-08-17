@@ -41,6 +41,7 @@ export const MultipleChoiceReviewArea: React.FC<MultipleChoiceReviewAreaProps> =
   const [isCurrentAnswerCorrect, setIsCurrentAnswerCorrect] = useState<boolean | null>(null);
 
   const currentMCQ = mcqs[currentMCQIndex];
+  const isLastQuestion = currentMCQIndex === mcqs.length - 1;
 
   useEffect(() => {
     setSelectedOptionIndex(null);
@@ -268,7 +269,7 @@ export const MultipleChoiceReviewArea: React.FC<MultipleChoiceReviewAreaProps> =
             rightIcon={<NextIcon />}
             size="lg"
           >
-            {t('mcqReviewArea_nextQuestionButton')}
+            {isLastQuestion ? t('mcqReviewArea_submitQuizButton') : t('mcqReviewArea_nextQuestionButton')}
           </Button>
         )}
       </div>
