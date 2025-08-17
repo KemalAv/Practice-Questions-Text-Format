@@ -5,6 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Practice Questions Text Format</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: {
+          fontCache: 'global'
+        },
+        startup: {
+          ready: () => {
+            MathJax.startup.defaultReady();
+          }
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
     <style>
       body {
         font-family: 'Inter', sans-serif; /* Tailwind's default sans-serif is usually good */
@@ -14,6 +31,18 @@
           background-color: #1f2937; /* gray-800 */
           color: #f3f4f6; /* gray-100 */
         }
+      }
+      /* MathJax adjustments */
+      mjx-container {
+        /* Inherit color for dark mode compatibility */
+        color: inherit; 
+        /* Inherit text alignment from parent (e.g., center in cards) */
+        text-align: inherit !important; 
+        /* Inherit font size to be consistent with surrounding text */
+        font-size: inherit;
+        /* Prevent horizontal overflow on small screens */
+        overflow-x: auto;
+        overflow-y: hidden;
       }
     </style>
   <script type="importmap">

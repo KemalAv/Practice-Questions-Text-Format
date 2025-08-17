@@ -1,4 +1,5 @@
 
+
 import { Language } from './types';
 
 // Helper function for string formatting (e.g., "Card {0} of {1}")
@@ -24,6 +25,8 @@ export const translations = {
     common_order_random: "Acak",
     common_order_sequential: "Berurutan",
     common_setOrderPreference_inputArea: "Atur Urutan:", // New key for input areas
+    common_enabled: "Aktif",
+    common_disabled: "Nonaktif",
     // common_shuffleToggle_tooltip_setSequential: "Atur urutan menjadi berurutan (sesuai input)", // Removed
     // common_shuffleToggle_tooltip_setRandom: "Atur urutan menjadi acak", // Removed
 
@@ -35,6 +38,7 @@ export const translations = {
     mainMenu_mcqButton: "Mode Pilihan Ganda",
     mainMenu_flashcardDescription: "Buat dan ulas kartu flash kustom.",
     mainMenu_mcqDescription: "Uji pengetahuan Anda dengan soal pilihan ganda.",
+    mainMenu_latexSupport: "Dukungan Matematika (LaTeX):",
     // mainMenu_setOrderPreference: "Atur Preferensi Urutan Soal:", // Removed from main menu context
 
     // FlashcardInputArea
@@ -131,6 +135,8 @@ export const translations = {
     common_order_random: "Random",
     common_order_sequential: "Sequential",
     common_setOrderPreference_inputArea: "Set Order:", // New key for input areas
+    common_enabled: "Enabled",
+    common_disabled: "Disabled",
     // common_shuffleToggle_tooltip_setSequential: "Set order to sequential (as per input)", // Removed
     // common_shuffleToggle_tooltip_setRandom: "Set order to random", // Removed
     
@@ -141,6 +147,7 @@ export const translations = {
     mainMenu_mcqButton: "Multiple Choice Mode",
     mainMenu_flashcardDescription: "Create and review custom flashcards.",
     mainMenu_mcqDescription: "Test your knowledge with multiple choice questions.",
+    mainMenu_latexSupport: "Math Support (LaTeX):",
     // mainMenu_setOrderPreference: "Set Question Order Preference:", // Removed
 
 
