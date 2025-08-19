@@ -76,11 +76,11 @@ export const FlashcardInputArea: React.FC<FlashcardInputAreaProps> = ({
         {t('inputArea_instructionFormat')}
       </p>
       <pre className="bg-gray-100 dark:bg-gray-700 p-3 rounded-md text-xs text-gray-700 dark:text-gray-300 mb-4 overflow-x-auto" aria-label="Contoh format input flashcard">
-        {t('inputArea_parser_questionKeyword')}: [{t('inputArea_exampleQuestion1')}]<br />
-        {t('inputArea_parser_answerKeyword')}: [{t('inputArea_exampleAnswer1')}]<br />
+        {t('inputArea_parser_questionKeyword')}: {t('inputArea_exampleQuestion1')}<br />
+        {t('inputArea_parser_answerKeyword')}: {t('inputArea_exampleAnswer1')}<br />
         <br />
-        {t('inputArea_parser_questionKeyword')}: [{t('inputArea_exampleQuestion2')}]<br />
-        {t('inputArea_parser_answerKeyword')}: [{t('inputArea_exampleAnswer2')}]<br />
+        {t('inputArea_parser_questionKeyword')}: {t('inputArea_exampleQuestion2')}<br />
+        {t('inputArea_parser_answerKeyword')}: {t('inputArea_exampleAnswer2')}<br />
         <br />
         ...{t('common_etc')}
       </pre>
